@@ -1,6 +1,7 @@
 
 <header class="<%= current_page?(root_path) ? "hero" : "hero small" %>">
   <section class="title">
+  
     <h3>Welcome to</h3>
     <h1>The Jungle</h1>
     <h2>Where you can find any plants!</h2>
@@ -66,6 +67,11 @@
       </ul>
     </div>
   </div>
+  <ul>
+  <li><%= link_to 'Home', root_path %></li>
+  <li><%= link_to 'Products', products_path %></li>
+  <li><%= link_to 'About', about_index_url %></li> <!-- New line -->
+</ul>
 </nav>
 <script>
 (function(){
@@ -85,4 +91,6 @@ const gnr = () => {
   title.addEventListener("dblclick", gnr);
   
 })()
+
+
   </script>
