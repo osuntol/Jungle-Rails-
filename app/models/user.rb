@@ -1,37 +1,30 @@
 class User < ApplicationRecord
-CONFIRMATION_TOKEN_EXPIRATION =  15.minutes
-attr_accessor :email, :first_name, :last_name
 
 
 
 has_secure_password
 
-  before_save :downcase_email
 
-  validates :email, format: {with: URI::MailTo::EMAIL_REGEXP}, presence: true, uniqueness: true
-
+  validates :email, presence: true, uniqueness: {case_sensitive: false}
   validates :first_name, presence: true
   validates :last_name, presence: true
+  validates :password, presence: true, length: { minimum: 7 }, on: :create
 
-def confirm!
-  update_columns(confirmed_at: Time.current)
-end
 
-def confirmed?
-  confirmed_at.present?
-end
 
-def generate_confirmation_token
-  signed_id expires_in: CONFIRMATION_TOKEN_EXPIRATION, purpose: :confirm_email
-end
-
-def unconfirmed?
-  !confirmed?
-end
-
-private
-
-def downcase_email
-  self.email = email.downcase
+before_save do 
+  self.email = self.email.downcase
  end
+
+ def self.authenticate_with_credentials(email, password)
+  email = email.strip
+  email = email.downcase
+  user = User.find_by(email: email)
+    if user.present? && user.authenticate(password)
+      return user 
+    else
+      return nil
+    end
+ end 
 end
+
